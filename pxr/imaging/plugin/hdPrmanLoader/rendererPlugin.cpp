@@ -180,7 +180,7 @@ HdPrmanLoaderRendererPlugin::DeleteRenderDelegate(
 }
 
 bool
-HdPrmanLoaderRendererPlugin::IsSupported(bool /* gpuEnabled */) const
+HdPrmanLoaderRendererPlugin::IsSupported(bool /* gpuEnabled */, const TfToken& /*hgiToken*/) const
 {
     if (!_hdPrman.valid) {
         TF_DEBUG(HD_RENDERER_PLUGIN).Msg(

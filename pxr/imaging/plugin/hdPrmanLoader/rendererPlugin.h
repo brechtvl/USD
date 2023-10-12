@@ -22,7 +22,7 @@ public:
     HdRenderDelegate *CreateRenderDelegate(
         HdRenderSettingsMap const& settingsMap) override;
     void DeleteRenderDelegate(HdRenderDelegate *) override;
-    bool IsSupported(bool gpuEnabled = true) const override;
+    bool IsSupported(bool gpuEnabled = true, const TfToken hgiToken& = TfToken()) const override;
 
 private:
     // This class does not support copying.

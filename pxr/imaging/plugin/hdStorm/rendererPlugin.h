@@ -24,7 +24,7 @@ public:
     virtual void DeleteRenderDelegate(HdRenderDelegate *renderDelegate) 
         override;
 
-    virtual bool IsSupported(bool gpuEnabled = true) const override;
+    virtual bool IsSupported(bool gpuEnabled = true, const TfToken& hgiToken = TfToken()) const override;
 
 private:
     HdStormRendererPlugin(const HdStormRendererPlugin &)             = delete;

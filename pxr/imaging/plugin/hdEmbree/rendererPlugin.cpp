@@ -37,7 +37,7 @@ HdEmbreeRendererPlugin::DeleteRenderDelegate(HdRenderDelegate *renderDelegate)
 }
 
 bool 
-HdEmbreeRendererPlugin::IsSupported(bool /* gpuEnabled */) const
+HdEmbreeRendererPlugin::IsSupported(bool /* gpuEnabled */, const TfToken& /* hgiToken */) const
 {
     // Nothing more to check for now, we assume if the plugin loads correctly
     // it is supported.
