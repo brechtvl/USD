@@ -20,7 +20,15 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads REQUIRED)
 set(PXR_THREAD_LIBS "${CMAKE_THREAD_LIBS_INIT}")
 
-if((PXR_ENABLE_PYTHON_SUPPORT AND PXR_USE_BOOST_PYTHON) OR PXR_ENABLE_OPENVDB_SUPPORT)
+# --OpenVDB. Detect version early to determine if Boost is needed for it.
+if (PXR_BUILD_IMAGING AND PXR_ENABLE_OPENVDB_SUPPORT)
+    set(REQUIRES_Imath TRUE)
+    find_package(OpenVDB REQUIRED)
+    add_definitions(-DPXR_OPENVDB_SUPPORT_ENABLED)
+endif()
+
+if((PXR_ENABLE_PYTHON_SUPPORT AND PXR_USE_BOOST_PYTHON) OR
+   (PXR_ENABLE_OPENVDB_SUPPORT AND NOT (OPENVDB_VERSION VERSION_GREATER_EQUAL "12.0.0")))
     # Find Boost package before getting any boost specific components as we need to
     # disable boost-provided cmake config, based on the boost version found.
     find_package(Boost REQUIRED)
@@ -256,12 +264,6 @@ if (PXR_BUILD_IMAGING)
     if (PXR_ENABLE_PTEX_SUPPORT)
         find_package(PTex REQUIRED)
         add_definitions(-DPXR_PTEX_SUPPORT_ENABLED)
-    endif()
-    # --OpenVDB
-    if (PXR_ENABLE_OPENVDB_SUPPORT)
-        set(REQUIRES_Imath TRUE)
-        find_package(OpenVDB REQUIRED)
-        add_definitions(-DPXR_OPENVDB_SUPPORT_ENABLED)
     endif()
     # --X11
     if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
