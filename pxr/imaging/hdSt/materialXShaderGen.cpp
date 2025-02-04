@@ -447,8 +447,17 @@ HdStMaterialXShaderGen<Base>::_EmitMxInitFunction(
         emitLine("u_envIrradiance = HdGetSampler_domeLightFallback()", mxStage);
         emitLine("u_envRadiance = HdGetSampler_domeLightFallback()", mxStage);
         emitLine("#endif", mxStage, false);
+        emitLine("u_envRadianceMips = textureQueryLevels(u_envRadiance)", mxStage);
     }
-    emitLine("u_envRadianceMips = textureQueryLevels(u_envRadiance)", mxStage);
+    else {
+        if (std::is_same_v<Base, MaterialX::MslShaderGenerator>) {
+            // Msl has this wrapped in a MetalTexture class
+            emitLine("u_envRadianceMips = textureQueryLevels(u_envRadiance.tex)", mxStage);
+        }
+        else {
+            emitLine("u_envRadianceMips = textureQueryLevels(u_envRadiance)", mxStage);
+        }
+    }
     Base::emitLineBreak(mxStage);
 
     // Initialize MaterialX Texture samplers with HdGetSampler equivalents
@@ -1310,11 +1319,11 @@ HdStMaterialXShaderGenMsl::_EmitMxFunctions(
     mx::ShaderStage& mxStage) const
 {
     mx::ShaderGenerator::emitLibraryInclude(
-        "pbrlib/" + mx::GlslShaderGenerator::TARGET
-        + "/lib/mx_microfacet.glsl", mxContext, mxStage);
-    mx::ShaderGenerator::emitLibraryInclude(
         "stdlib/" + mx::MslShaderGenerator::TARGET
         + "/lib/mx_math.metal", mxContext, mxStage);
+    mx::ShaderGenerator::emitLibraryInclude(
+        "pbrlib/" + mx::GlslShaderGenerator::TARGET
+        + "/lib/mx_microfacet.glsl", mxContext, mxStage);
     _EmitConstantsUniformsAndTypeDefs(
         mxContext, mxStage,_syntax->getConstantQualifier());
 
